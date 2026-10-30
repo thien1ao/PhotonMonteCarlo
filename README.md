@@ -84,20 +84,17 @@ Generated plots are saved in the `assets/` directory with corresponding filename
 
 ## Configuration
 
-Simulation parameters are defined in the `Config` dataclass in `config.py`.
-
 | Parameter | Default | Description |
 |---|---:|---|
 | `photons` | 100000 | Number of photon packets per simulation |
 | `width` | 512 | Detector width in pixels |
 | `height` | 512 | Detector height in pixels |
-<<<<<<< HEAD
 | `sigma_a` | 1.0 | Absorption coefficient $\sigma_a$ |
 | `sigma_s` | 1.0 | Scattering coefficient $\sigma_s$ |
-| `g` | 0.75 | Scattering anisotropy, $-1 < g < 1$ ($0$ = isotropic, $> 0$ = mostly forward) |
-| `detector_size` | 1.0 | Physical width and height of the square detector, centred on the beam |
-| `roulette_threshold` | 0.001 | Weight below which Russian roulette starts |
-| `roulette_survival` | 0.1 | Survival probability in Russian roulette ($1/m$ in the lesson) |
+| `g` | 0.75 | Scattering anisotropy, $-1 < g < 1$ ($0$ = isotropic) |
+| `detector_size` | 1.0 | Physical width and height of the detector |
+| `roulette_threshold` | 0.001 | Photon weight threshold below which Russian roulette is applied |
+| `roulette_survival` | 0.1 | Survival probability in Russian roulette |
 
 ## Progressive refinement
 
