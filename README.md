@@ -43,10 +43,9 @@ $$\mu'_y = \mu_y\cos\theta + \frac{\sin\theta\,(\mu_y\mu_z\cos\phi + \mu_x\sin\p
 
 $$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
 
-Full disclosure: all the math above is borrowed from the
-[original lesson](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
-This README only shows *what* the formulas are; the lesson explains *why*,
-and does it much better.
+:exclamation: All the math is based on 
+[original lesson](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html),
+where it's explained much better.
 
 ## Requirements
 
