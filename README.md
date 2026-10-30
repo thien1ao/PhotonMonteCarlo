@@ -25,11 +25,19 @@ $$s = -\frac{\ln \xi}{\sigma_t}, \qquad \xi \sim U(0, 1)$$
 
 $$s_b = \frac{d - z}{\mu_z} \ \text{ if } \mu_z > 0, \qquad s_b = -\frac{z}{\mu_z} \ \text{ if } \mu_z < 0$$
 
-**3. Absorption.** Photon moves by $s$ and loses the absorbed part of its weight:
+**3. Absorption.** Photon moves by $s$ and loses the absorbed
+fraction $\sigma_a / \sigma_t$ of its weight:
 
-$$w \leftarrow w \, \frac{\sigma_s}{\sigma_t}$$
+$$w \leftarrow w \left(1 - \frac{\sigma_a}{\sigma_t}\right) = w \, \frac{\sigma_s}{\sigma_t}$$
 
-**4. Russian roulette.** If $w$ drops below `roulette_threshold`, the photon survives with probability $p$ = `roulette_survival` and its weight becomes $w / p$; otherwise it is killed. On average the weight is preserved ($p \cdot w/p = w$), so the estimate stays unbiased while the walk still ends.
+**4. Russian roulette.** Once $w$ drops below `roulette_threshold`, tracing the photon
+further costs time but barely changes the result. So the photon survives with
+probability $p$ = `roulette_survival`, and its weight becomes $w / p$; otherwise it is
+killed. The expected weight is unchanged,
+
+$$p \cdot \frac{w}{p} + (1 - p) \cdot 0 = w,$$
+
+so the estimate stays unbiased while every walk still ends eventually.
 
 **5. Scattering.** The cosine of the deflection angle is sampled from the Henyey–Greenstein phase function with anisotropy $g$:
 
