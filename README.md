@@ -34,10 +34,6 @@ $$w \rightarrow w - \frac{\sigma_a}{\sigma_t} = w$$
 `roulette_survival`
 **4. Russian roulette.**  When a photon's weight drops below `roulette_threshold` , continuing its trajectory becomes computationally expensive relative to its contribution to the result. Russian roulette is therefore applied: the photon survives with probability $p$ = `roulette_survival`, in which case its weight is increased to $w/p$. Otherwise, the photon is terminated.
 
-$$p \cdot \frac{w}{p} + (1 - p) \cdot 0 = w,$$
-
-so the estimate stays unbiased while every walk still ends eventually.
-
 **5. Scattering.** The cosine of the deflection angle is sampled from the Henyey–Greenstein phase function with anisotropy $g$:
 
 $$\cos\theta = \frac{1}{2g}\left[1 + g^2 - \left(\frac{1 - g^2}{1 - g + 2g\xi}\right)^2\right], \qquad \cos\theta = 2\xi - 1 \ \text{ for } g = 0$$
