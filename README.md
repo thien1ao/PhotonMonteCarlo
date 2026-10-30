@@ -99,27 +99,6 @@ Simulation parameters are defined in the `Config` dataclass in `config.py`.
 | `roulette_threshold` | 0.001 | Weight below which Russian roulette starts |
 | `roulette_survival` | 0.1 | Survival probability in Russian roulette ($1/m$ in the lesson) |
 
-The defaults can be changed directly in `config.py` or overridden when creating a configuration object:
-=======
-| `sigma_a` | 1.0 | Absorption coefficient |
-| `sigma_s` | 1.0 | Scattering coefficient |
-| `anisotropy` | 0.75 | Scattering anisotropy, -1 < g < 1 |
-| `detector_size` | 1.0 | Physical width and height of the square detector |
-| `roulette_threshold` | 0.001 | Weight below which Russian roulette starts |
-| `roulette_survival` | 0.1 | Survival probability in Russian roulette |
-
-The default values can be changed directly in `config.py` or overridden when creating a configuration object:
-
-```python
-settings = Config(
-    photons=1_000_000,
-<<<<<<< HEAD
-    g=0.9,
-    sigma_a=0.5,
-    sigma_s=1.5,
-)
-```
-
 ## Progressive refinement
 
 As described in the lesson, each run of the simulation is an independent estimate, so several runs can be averaged to reduce the noise. `plot_passes.py` runs the simulation $M$ times for the same slab thickness, each pass with new random photon paths, and averages the detector images:
