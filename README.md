@@ -8,12 +8,10 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 
 1. **Implemented the lesson's algorithm**: free path sampling, photon weights, Russian roulette, Henyey–Greenstein scattering and the direction update (see [Algorithm](#algorithm)).
 2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays.
-3. **Fixed issues in the lesson's code** (see [Differences from the lesson](#differences-from-the-lesson)).
-4. **Reproduced the lesson's experiments:**
-   - detector image of the transmitted light (the diffusion halo around the beam),
-   - thickness sweep from $d = 0$ to $d = 2$ in 21 steps, as in the lesson (`plot_thickness.py`),
-   - progressive refinement: averaging several independent passes (`plot_passes.py`).
-5. **Made the images readable** with a logarithmic colour scale (see [Why a logarithmic colour scale?](#why-a-logarithmic-colour-scale)).
+3. **Reproduced the lesson's experiments:**
+   - detector image of the transmitted light,
+   - thickness sweep from $d = 0$ to $d = 2$ in 21 steps (`plot_thickness.py`),
+   - progressive refinement: averaging the results of Monte Carlo approximations (`plot_passes.py`).
 
 ## Algorithm
 
