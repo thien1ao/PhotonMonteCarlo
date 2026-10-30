@@ -28,12 +28,11 @@ $$s_b = \frac{d - z}{\mu_z} \ \text{ if } \mu_z > 0, \qquad s_b = -\frac{z}{\mu_
 **3. Absorption.** Photon moves by $s$ and loses the absorbed
 fraction $\sigma_a / \sigma_t$ of its weight:
 
-$$w \leftarrow w \left(1 - \frac{\sigma_a}{\sigma_t}\right) = w \, \frac{\sigma_s}{\sigma_t}$$
+$$w \rightarrow w - \frac{\sigma_a}{\sigma_t} = w$$
 
-**4. Russian roulette.** Once $w$ drops below `roulette_threshold`, tracing the photon
-further costs time but barely changes the result. So the photon survives with
-probability $p$ = `roulette_survival`, and its weight becomes $w / p$; otherwise it is
-killed. The expected weight is unchanged,
+
+`roulette_survival`
+**4. Russian roulette.**  When a photon's weight drops below `roulette_threshold` , continuing its trajectory becomes computationally expensive relative to its contribution to the result. Russian roulette is therefore applied: the photon survives with probability $p$ = `roulette_survival`, in which case its weight is increased to $w/p$. Otherwise, the photon is terminated.
 
 $$p \cdot \frac{w}{p} + (1 - p) \cdot 0 = w,$$
 
