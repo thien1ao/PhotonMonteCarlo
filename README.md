@@ -1,10 +1,6 @@
 # Photon Monte Carlo
 
-Monte Carlo simulation of photon transport through a homogeneous scattering slab.
-
-A narrow beam of photons enters a slab of thickness $d$. Inside the material the photons are absorbed and scattered. Photons leaving through the bottom surface are recorded on a two-dimensional detector (transmittance $T$), photons leaving through the top surface contribute to the diffuse reflectance $R_d$.
-
-The project implements the algorithm from the Scratchapixel lesson [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html) (part of *Monte Carlo Methods in Practice*), rewritten in Python with numpy.
+This project implements the algorithm from the Scratchapixel lesson [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html) (part of *Monte Carlo Methods in Practice*), rewritten in Python with numpy.
 
 ![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
 
