@@ -11,7 +11,7 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 3. **Reproduced the lesson's experiments:**
    - spatial distribution of transmitted photon weights,
    - increasing values of $d$ (the thickness of the slab) from $0$ to $2$ (`plot_thickness.py`),
-   - progressive refinement: averaging the results of Monte Carlo approximations (`plot_passes.py`).
+   - multiple simulation passes: averaging the results of Monte Carlo approximations (`plot_passes.py`).
 
 ## ⚙️ Algorithm
 
@@ -52,7 +52,7 @@ The equations above are intended as a brief overview of the mathematical concept
 ## 🛠️ Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/thien1ao/PhotonMonteCarlo.git
 cd PhotonMonteCarlo
 ```
 
@@ -95,32 +95,15 @@ Generated plots are saved in the `assets/` directory with corresponding filename
 | `roulette_threshold` | 0.001 | Photon weight threshold below which Russian roulette is applied |
 | `roulette_survival` | 0.1 | Survival probability in Russian roulette |
 
+
+
 ## Progressive refinement
 
-As described in the lesson, each run of the simulation is an independent estimate, so several runs can be averaged to reduce the noise. `plot_passes.py` runs the simulation $M$ times for the same slab thickness, each pass with new random photon paths, and averages the detector images:
+As discussed in the lesson, a single simulation of $N$ photons is generally insufficient to produce visually smooth, low-noise results. To reduce statistical noise, the simulation can be repeated multiple times using independent random photon paths. The resulting detector images are then averaged:
 
 $$I_{\text{average}} = \frac{1}{M}\sum_{k=1}^{M} I_k$$
 
-The statistical noise decreases as $1/\sqrt{M}$: 16 passes give about four times less noise than one pass with the same number of photons per pass.
-=======
-`plot_passes.py` runs the simulation multiple times for the same slab thickness and averages the resulting detector images.
-
-Each pass uses a new set of randomly sampled photon paths. The accumulated image is averaged over the number of passes:
-
-\[
-I_{\mathrm{average}} =
-\frac{1}{M}\sum_{k=1}^{M} I_k
-\]
-
-where \(M\) is the number of independent simulation passes.
-
-The statistical noise decreases approximately as:
-
-\[
-\frac{1}{\sqrt{M}}
-\]
-
-For example, 16 independent passes produce approximately four times less statistical noise than one pass, assuming the same number of photons per pass.
+The standard deviation of statistical noise decreases as $\frac{1}{M}$. For example, averaging 16 independent passes reduces the noise by a factor of 4 compared to a single pass with the same number of photons.
 
 ![Progressive refinement](assets/passes_grid.png)
 
