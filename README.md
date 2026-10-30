@@ -8,98 +8,11 @@ The simulation is based on the Monte Carlo approach to light transport described
 
 ![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
 
-## How it works
-
-Every photon starts at position `(0, 0, 0)`, moving straight down along the positive z-axis, with an initial weight `w = 1`.
-
-The simulation repeats the following steps for each active photon:
-
-1. **Free path sampling.** Sample the distance to the next interaction from an exponential distribution:
-
-   \[
-   s = -\frac{\ln(\xi)}{\sigma_t},
-   \qquad
-   \sigma_t = \sigma_a + \sigma_s
-   \]
-
-   where \(\xi\) is a uniformly distributed random number between 0 and 1.
-
-2. **Boundary check.** Calculate the distance to the next slab boundary. If the sampled free path is longer than this distance, the photon leaves the slab before its next interaction. Photons leaving through the bottom contribute to the transmittance (**T**) and are recorded on the detector. Photons leaving through the top contribute to the reflectance (**Rd**).
-
-3. **Absorption.** If the photon does not reach a boundary, it moves to the next interaction point. Its weight is reduced according to the scattering probability:
-
-   \[
-   w \leftarrow w \frac{\sigma_s}{\sigma_t}
-   \]
-
-   This is an implicit capture approach: the absorbed fraction of the photon weight is removed, while the remaining fraction continues to propagate.
-
-4. **Russian roulette.** If the photon weight falls below `roulette_threshold`, the photon survives with probability `roulette_survival`. Surviving photons have their weights divided by the survival probability; otherwise, they are terminated. This reduces computational effort while preserving an unbiased estimate.
-
-5. **Scattering.** The photon direction is updated by sampling a new scattering angle from the Henyey–Greenstein phase function. The parameter `anisotropy` controls the preferred scattering direction: positive values favour forward scattering, negative values favour backward scattering, and zero corresponds to isotropic scattering.
-
-All photons are simulated simultaneously using vectorized NumPy arrays. Each array element represents one photon packet. This avoids explicit Python loops over individual photons and improves computational efficiency.
-
-## Theoretical Background
-
-The simulation uses the Monte Carlo method to model the probabilistic nature of photon transport.
-
-The total interaction coefficient is defined as:
-
-\[
-\sigma_t = \sigma_a + \sigma_s
-\]
-
-where:
-
-- \(\sigma_a\) is the absorption coefficient.
-- \(\sigma_s\) is the scattering coefficient.
-- \(\sigma_t\) is the total interaction coefficient.
-
-The probability density of the distance \(s\) to the next interaction is:
-
-\[
-p(s) = \sigma_t e^{-\sigma_t s}
-\]
-
-The free path is sampled using inverse transform sampling:
-
-\[
-s = -\frac{\ln(\xi)}{\sigma_t}
-\]
-
-For scattering, the simulation uses the Henyey–Greenstein phase function:
-
-\[
-p(\cos\theta) =
-\frac{1-g^2}
-{2(1+g^2-2g\cos\theta)^{3/2}}
-\]
-
-where \(g\) is the anisotropy parameter, represented by `anisotropy` in the implementation.
-
-The theoretical principles of Monte Carlo sampling and photon transport are based on:
-
-[Scratchapixel – Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html)
-
-## Requirements
-
-- Python 3.7+
-- NumPy
-- Matplotlib 3.5+
-
-Install the dependencies:
-
-```bash
-pip install numpy matplotlib
-```
-
 ## Usage
 
-Run the scripts from the project root. Generated images are saved in the `assets/` directory.
-
 ```bash
-python3 plot_thickness.py
+git clone <repository-url>
+cd photon-monte-carlo
 ```
 
 Generates detector images for different slab thicknesses.
