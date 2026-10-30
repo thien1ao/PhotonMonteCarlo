@@ -25,7 +25,7 @@ $$s = -\frac{\ln \xi}{\sigma_t}, \qquad \xi \sim U(0, 1)$$
 
 $$s_b = \frac{d - z}{\mu_z} \ \text{ if } \mu_z > 0, \qquad s_b = -\frac{z}{\mu_z} \ \text{ if } \mu_z < 0$$
 
-**3. Absorption.** Otherwise the photon moves by $s$ and loses the absorbed part of its weight:
+**3. Absorption.** Photon moves by $s$ and loses the absorbed part of its weight:
 
 $$w \leftarrow w \, \frac{\sigma_s}{\sigma_t}$$
 
@@ -42,6 +42,11 @@ $$\mu'_x = \mu_x\cos\theta + \frac{\sin\theta\,(\mu_x\mu_z\cos\phi - \mu_y\sin\p
 $$\mu'_y = \mu_y\cos\theta + \frac{\sin\theta\,(\mu_y\mu_z\cos\phi + \mu_x\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
 
 $$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
+
+Full disclosure: all the math above is borrowed from the
+[original lesson](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
+This README only shows *what* the formulas are; the lesson explains *why*,
+and does it much better.
 
 ## Requirements
 
