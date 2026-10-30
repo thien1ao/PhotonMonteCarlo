@@ -10,12 +10,12 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays.
 3. **Reproduced the lesson's experiments:**
    - detector image of the transmitted light,
-   - increasing values of $d$ (the thickness of the slab) from $0$ to $2$(`plot_thickness.py`),
+   - increasing values of $d$ (the thickness of the slab) from $0$ to $2$ (`plot_thickness.py`),
    - progressive refinement: averaging the results of Monte Carlo approximations (`plot_passes.py`).
 
 ## Algorithm
 
-Every photon packet starts at $(0, 0, 0)$, moving into the slab along $+z$, with weight $w = 1$. It then repeats the following steps until it leaves the slab or is killed.
+Every photon packet starts at $(0, 0, 0)$ on the top surface and moves along $+z$, which points down into the slab (the top surface is at $z = 0$, the bottom at $z = d$). Its initial weight is $w = 1$. It then repeats the following steps until it leaves the slab or is killed.
 
 **1. Free path.** The distance to the next interaction follows the Beer–Lambert law, $p(s) = \sigma_t e^{-\sigma_t s}$ with $\sigma_t = \sigma_a + \sigma_s$. It is sampled by inverting the CDF:
 
