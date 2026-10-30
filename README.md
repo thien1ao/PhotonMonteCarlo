@@ -56,30 +56,6 @@ $$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
 
 For $|\mu_z| \approx 1$ the denominator is zero, so these photons use the special case from the lesson: $\mu' = (\sin\theta\cos\phi,\ \pm\sin\theta\sin\phi,\ \pm\cos\theta)$.
 
-## Differences from the lesson
-
-**Fixes to the lesson's code:**
-
-| | lesson | this project | why |
-|---|---|---|---|
-| absorption | `w -= sigma_a / sigma_t` | `w *= sigma_s / sigma_t` | the absorbed part must be a fraction of the current weight, not a constant |
-| weight clamp | `w = std::min(0.0, w)` | not needed | `min` sets the weight to 0 after the first interaction (should be `max`); with multiplication the weight never becomes negative |
-| detector bounds check | `x < width` | pixel index `xi < width` | compares a position with a pixel count |
-| exit position | position before the last step | position on the slab surface | photons are moved to the boundary before being recorded |
-| pixel index | `(int)` cast | `np.floor` | `(int)` rounds towards zero, so photons just outside the left and bottom edges were counted in pixel 0 |
-| $\mu_z = 0$ | distance to boundary 0, counted as reflected | distance $\infty$ | a photon moving parallel to the surfaces cannot leave the slab; it keeps scattering |
-
-**Different default parameters:**
-
-| parameter | lesson | this project |
-|---|---|---|
-| $\sigma_s$ | 2 | 1 |
-| detector width | 5 | 1 (zoomed in on the halo) |
-
-The other parameters are the same as in the lesson: 100 000 photons, $\sigma_a = 1$, $g = 0.75$, roulette threshold 0.001, survival probability $1/m = 0.1$ ($m = 10$), and a 512 × 512 detector.
-
-**Not implemented** (also left out by the lesson): specular reflection at the surface, internal reflection (Fresnel equations), and multi-layered materials.
-
 ## Requirements
 
 - Python 3.7+
@@ -261,64 +237,4 @@ The values are Monte Carlo estimates and vary by about $\pm 0.001$ between runs.
     sigma_a=0.5,
     sigma_s=1.5
 )
-```
-
-Slab thicknesses, the number of simulation passes, and snapshot settings are defined in `plot_thickness.py` and `plot_passes.py`.
-
-## Why a logarithmic colour scale?
-
-A fraction of the photons pass through the slab without experiencing any interaction.
-
-The probability of no interaction over a distance \(d\) is:
-
-\[
-P_{\mathrm{no\ interaction}} = e^{-\sigma_t d}
-\]
-
-With the default parameters, \(\sigma_t = 2\), this probability is approximately 82% at \(d = 0.1\).
-
-These photons maintain their initial direction and reach approximately the same central detector pixel. As a result, the central pixel can be much brighter than the surrounding scattered distribution.
-
-A linear colour scale would make the weaker scattered contributions difficult to distinguish. Therefore, the detector images use a logarithmic colour scale. The upper limit is set to the 99.9th percentile of non-empty pixel values to make the scattered distribution visible while allowing the central pixel to saturate.
-
-## Results
-
-The following results were obtained using the default parameters:
-
-- \(\sigma_a = 1.0\)
-- \(\sigma_s = 1.0\)
-- `anisotropy = 0.75`
-- 100,000 photon packets
-
-| Slab thickness \(d\) | Transmittance \(T\) | Reflectance \(R_d\) |
-|---:|---:|---:|
-| 0.0 | 1.000 | 0.000 |
-| 0.1 | 0.897 | 0.005 |
-| 1.0 | 0.305 | 0.018 |
-| 2.0 | 0.084 | 0.019 |
-
-The values are Monte Carlo estimates and may vary between simulation runs due to random sampling.
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
-
-As the slab thickness increases, fewer photons reach the bottom surface. Photons also undergo more interactions on average, resulting in a broader spatial distribution of transmitted light.
-
-<<<<<<< HEAD
-| File | Purpose |
-|---|---|
-| `particle.py` | the simulation: `simulate()`, Henyey–Greenstein sampling, scattering, boundaries, detector |
-| `config.py` | simulation parameters (`Config`) and the `Result` returned by `simulate()` |
-| `plotting.py` | shared plotting helpers: logarithmic colour scale and detector image |
-| `plot_thickness.py` | detector images for a range of slab thicknesses |
-| `plot_passes.py` | progressive refinement at a single slab thickness |
-
-## References
-
-- Scratchapixel, [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html), in *Monte Carlo Methods in Practice*.
-- L. Wang, S. L. Jacques, *Monte Carlo Modeling of Light Transport in Multi-layered Tissues in Standard C*, 1992 (MCML). Cited by the lesson as the basis of the algorithm.
-=======
-The sum of reflectance and transmittance is generally less than one because part of the initial photon weight is absorbed inside the material.
-
-## Reference
-
-- [Scratchapixel – Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html)
 >>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
