@@ -10,7 +10,7 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays.
 3. **Reproduced the lesson's experiments:**
    - detector image of the transmitted light,
-   - thickness sweep from $d = 0$ to $d = 2$ in 21 steps (`plot_thickness.py`),
+   - increasing values of $d$ (the thickness of the slab) from $0$ to $2$(`plot_thickness.py`),
    - progressive refinement: averaging the results of Monte Carlo approximations (`plot_passes.py`).
 
 ## Algorithm
