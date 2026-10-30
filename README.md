@@ -15,18 +15,17 @@ Every photon starts at position `(0, 0, 0)`, moving straight down along the posi
 The simulation repeats the following steps for each active photon:
 
 1. **Free path sampling.** Sample the distance to the next interaction from an exponential distribution:
-
-   \[
+   $$
    s = -\frac{\ln(\xi)}{\sigma_t},
    \qquad
    \sigma_t = \sigma_a + \sigma_s
-   \]
+   $$
 
    where \(\xi\) is a uniformly distributed random number between 0 and 1.
 
-2. **Boundary check.** Calculate the distance to the next slab boundary. If the sampled free path is longer than this distance, the photon leaves the slab before its next interaction. Photons leaving through the bottom contribute to the transmittance (**T**) and are recorded on the detector. Photons leaving through the top contribute to the reflectance (**Rd**).
+3. **Boundary check.** Calculate the distance to the next slab boundary. If the sampled free path is longer than this distance, the photon leaves the slab before its next interaction. Photons leaving through the bottom contribute to the transmittance (**T**) and are recorded on the detector. Photons leaving through the top contribute to the reflectance (**Rd**).
 
-3. **Absorption.** If the photon does not reach a boundary, it moves to the next interaction point. Its weight is reduced according to the scattering probability:
+4. **Absorption.** If the photon does not reach a boundary, it moves to the next interaction point. Its weight is reduced according to the scattering probability:
 
    \[
    w \leftarrow w \frac{\sigma_s}{\sigma_t}
@@ -34,9 +33,9 @@ The simulation repeats the following steps for each active photon:
 
    This is an implicit capture approach: the absorbed fraction of the photon weight is removed, while the remaining fraction continues to propagate.
 
-4. **Russian roulette.** If the photon weight falls below `roulette_threshold`, the photon survives with probability `roulette_survival`. Surviving photons have their weights divided by the survival probability; otherwise, they are terminated. This reduces computational effort while preserving an unbiased estimate.
+5. **Russian roulette.** If the photon weight falls below `roulette_threshold`, the photon survives with probability `roulette_survival`. Surviving photons have their weights divided by the survival probability; otherwise, they are terminated. This reduces computational effort while preserving an unbiased estimate.
 
-5. **Scattering.** The photon direction is updated by sampling a new scattering angle from the Henyey–Greenstein phase function. The parameter `anisotropy` controls the preferred scattering direction: positive values favour forward scattering, negative values favour backward scattering, and zero corresponds to isotropic scattering.
+6. **Scattering.** The photon direction is updated by sampling a new scattering angle from the Henyey–Greenstein phase function. The parameter `anisotropy` controls the preferred scattering direction: positive values favour forward scattering, negative values favour backward scattering, and zero corresponds to isotropic scattering.
 
 All photons are simulated simultaneously using vectorized NumPy arrays. Each array element represents one photon packet. This avoids explicit Python loops over individual photons and improves computational efficiency.
 
