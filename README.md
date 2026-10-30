@@ -68,21 +68,27 @@ the detector images. Each pass adds new photons, so the noise drops as
 
 ## Configuration
 
-All settings are in `config.py`, grouped into dataclasses:
+Physics parameters are in `Config` in `config.py`:
 
-| class | used by | settings |
+| parameter | default | meaning |
 |---|---|---|
-| `Config` | `simulate()` | physics: `photons`, detector `width` / `height` / `detector_size`, `sigma_a`, `sigma_s`, `g`, `roulette_threshold`, `roulette_survival` |
-| `PlotConfig` | `plotting.py` | `cmap`, `empty_color`, `vmax_percentile`, `log_scale`, `ticks`, `panel_size`, `dpi`, `output_dir`, `colorbar_label` |
-| `ThicknessStudy` | `plot_thickness.py` | `d_min`, `d_max`, `steps`, `cols`, `filename` |
-| `PassesStudy` | `plot_passes.py` | `thickness`, `npasses`, `snapshot_at`, `filename` |
+| `photons` | 100000 | photons per simulation |
+| `width`, `height` | 512 | detector resolution in cells |
+| `detector_size` | 1.0 | detector width in slab units, centred on the beam |
+| `sigma_a` | 1.0 | absorption coefficient |
+| `sigma_s` | 1.0 | scattering coefficient |
+| `g` | 0.75 | anisotropy of scattering, -1 < g < 1 (0 = isotropic) |
+| `roulette_threshold` | 0.001 | weight below which Russian roulette starts |
+| `roulette_survival` | 0.1 | survival probability in Russian roulette |
 
 Change the defaults in `config.py`, or override them in a script:
 
 ```python
-plot = PlotConfig(cmap="viridis", dpi=200)
-study = ThicknessStudy(d_max=5.0, steps=12, cols=4)
+config = Config(photons=1_000_000, g=0.9)
 ```
+
+Thicknesses, number of passes and snapshots are set at the top of
+`plot_thickness.py` and `plot_passes.py`.
 
 ### Why a log colour scale
 
@@ -90,8 +96,8 @@ A fraction exp(-sigma_t * d) of the photons never collide (82 % at d = 0.1 with
 the defaults). They pass straight through
 and all land in the centre cell, which is thousands of times brighter than the
 scattered halo. With a linear scale only that single pixel is visible. The plots
-therefore use a log scale (`log_scale = True`) whose top is the 99.9th percentile of
-the non-empty cells (`vmax_percentile`), so the centre just saturates to white.
+therefore use a log scale whose top is the 99.9th percentile of
+the non-empty cells, so the centre just saturates to white.
 
 ## Results
 
@@ -111,7 +117,7 @@ Values vary by about ±0.001 between runs (Monte Carlo noise).
 | file | purpose |
 |---|---|
 | `particle.py` | the simulation: `simulate()`, scattering, boundaries, detector |
-| `config.py` | all settings, and the `Result` returned by `simulate()` |
-| `plotting.py` | shared plotting helpers (colour scale, detector image, subplot grid, saving) |
+| `config.py` | physics parameters (`Config`) and the `Result` returned by `simulate()` |
+| `plotting.py` | shared plotting helpers (colour scale, detector image) |
 | `plot_thickness.py` | detector images for a range of thicknesses |
 | `plot_passes.py` | progressive refinement at a single thickness |
