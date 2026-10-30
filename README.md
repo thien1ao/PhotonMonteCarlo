@@ -4,7 +4,7 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 
 ![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
 
-## What was done
+## 📋 What was done
 
 1. **Implemented the lesson's algorithm**: free path sampling, photon weights, Russian roulette, Henyey–Greenstein scattering and the direction update (see [Algorithm](#algorithm)).
 2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays.
@@ -13,7 +13,7 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
    - increasing values of $d$ (the thickness of the slab) from $0$ to $2$ (`plot_thickness.py`),
    - progressive refinement: averaging the results of Monte Carlo approximations (`plot_passes.py`).
 
-## Algorithm
+## ⚙️ Algorithm
 
 Every photon packet starts at $(0, 0, 0)$ on the top surface and moves along $+z$, which points down into the slab (the top surface is at $z = 0$, the bottom at $z = d$). Its initial weight is $w = 1$. It then repeats the following steps until it leaves the slab or is killed.
 
@@ -50,7 +50,7 @@ $$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
 The equations above are intended as a brief overview of the mathematical concepts. For a more detailed explanation and derivation, please refer to the [original lesson](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
 
 
-## Installation
+## 🛠️ Installation
 
 ```bash
 git clone <repository-url>
@@ -72,12 +72,15 @@ conda create -y -n photon-mc python numpy matplotlib
 conda activate photon-mc
 ```
 
-## Usage
+## 🚀 Usage
 
 ```bash
 python3 plot_thickness.py
 python3 plot_passes.py
 ```
+Generated plots are saved in the assets/ directory with corresponding filenames:
+ - assets/thickness_grid.png
+ - assets/passes_grid.png 
 
 ## Progressive refinement
 
