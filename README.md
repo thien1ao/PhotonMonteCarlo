@@ -33,7 +33,7 @@ $$w \leftarrow w\frac{\sigma_a}{\sigma_t}$$
 
 **5. Scattering:** Sample a new direction using the Henyey–Greenstein phase function with anisotropy $g$:
 
-$$ \cos\theta = \begin{cases} \displaystyle \frac{1}{2g} \left[ 1+g^2- \left( \frac{1-g^2}{1-g+2g\xi} \right)^2 \right], & g \neq 0, \\[1.2em] 2\xi-1, & g=0. \end{cases}$$
+$$ \cos\theta = \begin{cases} \displaystyle \frac{1}{2g} \left[ 1+g^2- \left( \frac{1-g^2}{1-g+2g\xi} \right)^2 \right], & g \neq 0, 2\xi-1, & g=0. \end{cases}$$
 
 The formulas for each coordinate of the new direction vector are as follows:
 
