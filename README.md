@@ -97,7 +97,7 @@ Generated plots are saved in the `assets/` directory with corresponding filename
 
 
 
-## Progressive refinement
+## Multiple Simulation Passes
 
 As discussed in the lesson, a single simulation of $N$ photons is generally insufficient to produce visually smooth, low-noise results. To reduce statistical noise, the simulation can be repeated multiple times using independent random photon paths. The resulting detector images are then averaged:
 
@@ -106,7 +106,6 @@ $$I_{\text{average}} = \frac{1}{M}\sum_{k=1}^{M} I_k$$
 The standard deviation of statistical noise decreases as $\frac{1}{M}$. For example, averaging 16 independent passes reduces the noise by a factor of 4 compared to a single pass with the same number of photons.
 
 ![Progressive refinement](assets/passes_grid.png)
-
 
 ## Why a logarithmic colour scale?
 
