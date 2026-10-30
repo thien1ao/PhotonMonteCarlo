@@ -49,27 +49,34 @@ $$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
 :exclamation:
 The equations above are intended as a brief overview of the mathematical concepts. For a more detailed explanation and derivation, please refer to the [original lesson](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
 
-## Requirements
 
-- Python 3.7+
-- numpy
-- matplotlib 3.5+
-
-```bash
-pip install numpy matplotlib
-```
-
-## Usage
+## Installation
 
 ```bash
 git clone <repository-url>
 cd PhotonMonteCarlo
 ```
 
-Run the scripts from the project root. The images are saved to `assets/`.
+### pip
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install numpy matplotlib
+```
+
+### conda
+
+```bash
+conda create -y -n photon-mc python numpy matplotlib
+conda activate photon-mc
+```
+
+## Usage
 
 ```bash
 python3 plot_thickness.py
+python3 plot_passes.py
 ```
 
 ## Progressive refinement
