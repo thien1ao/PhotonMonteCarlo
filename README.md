@@ -1,4 +1,4 @@
-# Photon Monte Carlo
+# Monte Carlo Simulation of Photon Transport
 
 This project implements the algorithm from the Scratchapixel lesson [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html) (part of *Monte Carlo Methods in Practice*), rewritten in Python with numpy.
 
@@ -80,37 +80,7 @@ python3 plot_passes.py
 ```
 Generated plots are saved in the assets/ directory with corresponding filenames:
  - assets/thickness_grid.png
- - assets/passes_grid.png 
-
-## Progressive refinement
-
-<<<<<<< HEAD
-As described in the lesson, each run of the simulation is an independent estimate, so several runs can be averaged to reduce the noise. `plot_passes.py` runs the simulation $M$ times for the same slab thickness, each pass with new random photon paths, and averages the detector images:
-
-$$I_{\text{average}} = \frac{1}{M}\sum_{k=1}^{M} I_k$$
-
-The statistical noise decreases as $1/\sqrt{M}$: 16 passes give about four times less noise than one pass with the same number of photons per pass.
-=======
-`plot_passes.py` runs the simulation multiple times for the same slab thickness and averages the resulting detector images.
-
-Each pass uses a new set of randomly sampled photon paths. The accumulated image is averaged over the number of passes:
-
-\[
-I_{\mathrm{average}} =
-\frac{1}{M}\sum_{k=1}^{M} I_k
-\]
-
-where \(M\) is the number of independent simulation passes.
-
-The statistical noise decreases approximately as:
-
-\[
-\frac{1}{\sqrt{M}}
-\]
-
-For example, 16 independent passes produce approximately four times less statistical noise than one pass, assuming the same number of photons per pass.
-
-![Progressive refinement](assets/passes_grid.png)
+ - assets/passes_grid.png
 
 ## Configuration
 
@@ -139,7 +109,6 @@ The defaults can be changed directly in `config.py` or overridden when creating 
 | `roulette_survival` | 0.1 | Survival probability in Russian roulette |
 
 The default values can be changed directly in `config.py` or overridden when creating a configuration object:
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
 
 ```python
 settings = Config(
@@ -151,7 +120,35 @@ settings = Config(
 )
 ```
 
-Slab thicknesses, the number of passes and the snapshot settings are defined at the top of `plot_thickness.py` and `plot_passes.py`.
+## Progressive refinement
+
+As described in the lesson, each run of the simulation is an independent estimate, so several runs can be averaged to reduce the noise. `plot_passes.py` runs the simulation $M$ times for the same slab thickness, each pass with new random photon paths, and averages the detector images:
+
+$$I_{\text{average}} = \frac{1}{M}\sum_{k=1}^{M} I_k$$
+
+The statistical noise decreases as $1/\sqrt{M}$: 16 passes give about four times less noise than one pass with the same number of photons per pass.
+=======
+`plot_passes.py` runs the simulation multiple times for the same slab thickness and averages the resulting detector images.
+
+Each pass uses a new set of randomly sampled photon paths. The accumulated image is averaged over the number of passes:
+
+\[
+I_{\mathrm{average}} =
+\frac{1}{M}\sum_{k=1}^{M} I_k
+\]
+
+where \(M\) is the number of independent simulation passes.
+
+The statistical noise decreases approximately as:
+
+\[
+\frac{1}{\sqrt{M}}
+\]
+
+For example, 16 independent passes produce approximately four times less statistical noise than one pass, assuming the same number of photons per pass.
+
+![Progressive refinement](assets/passes_grid.png)
+
 
 ## Why a logarithmic colour scale?
 
