@@ -112,12 +112,4 @@ With the default parameters (`sigma_a = sigma_s = 1`, `g = 0.75`, 100 000 photon
 
 Values vary by about ±0.001 between runs (Monte Carlo noise).
 
-## Files
-
-| file | purpose |
-|---|---|
-| `particle.py` | the simulation: `simulate()`, scattering, boundaries, detector |
-| `config.py` | physics parameters (`Config`) and the `Result` returned by `simulate()` |
-| `plotting.py` | shared plotting helpers (colour scale, detector image) |
-| `plot_thickness.py` | detector images for a range of thicknesses |
 | `plot_passes.py` | progressive refinement at a single thickness |
