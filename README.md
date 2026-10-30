@@ -43,15 +43,13 @@ $$w \leftarrow w \, \frac{\sigma_s}{\sigma_t}$$
 
 $$\cos\theta = \frac{1}{2g}\left[1 + g^2 - \left(\frac{1 - g^2}{1 - g + 2g\xi}\right)^2\right], \qquad \cos\theta = 2\xi - 1 \ \text{ for } g = 0$$
 
-and the azimuth uniformly, $\phi = 2\pi\xi$. The new direction is
+The formulas for each coordinate of the new direction vector are as follows:
 
 $$\mu'_x = \mu_x\cos\theta + \frac{\sin\theta\,(\mu_x\mu_z\cos\phi - \mu_y\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
 
 $$\mu'_y = \mu_y\cos\theta + \frac{\sin\theta\,(\mu_y\mu_z\cos\phi + \mu_x\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
 
 $$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
-
-For $|\mu_z| \approx 1$ the denominator is zero, so these photons use the special case from the lesson: $\mu' = (\sin\theta\cos\phi,\ \pm\sin\theta\sin\phi,\ \pm\cos\theta)$.
 
 ## Requirements
 
@@ -157,7 +155,6 @@ The statistical noise decreases approximately as:
 \]
 
 For example, 16 independent passes produce approximately four times less statistical noise than one pass, assuming the same number of photons per pass.
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
 
 ![Progressive refinement](assets/passes_grid.png)
 
