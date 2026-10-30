@@ -66,60 +66,6 @@ Run the scripts from the project root. The images are saved to `assets/`.
 python3 plot_thickness.py
 ```
 
-Generates detector images for slab thicknesses from 0 to 2 (`assets/thickness_grid.png`).
-=======
-A narrow beam of photons enters a slab with thickness \(d\). As photons travel through the material, they undergo absorption and scattering. Photons leaving through the bottom surface are recorded on a two-dimensional detector, while photons leaving through the top surface contribute to the reflectance.
-
-The simulation is based on the Monte Carlo approach to light transport described in [Scratchapixel – Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
-
-![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
-
-## Usage
-
-```bash
-git clone <repository-url>
-cd photon-monte-carlo
-```
-
-Generates detector images for different slab thicknesses.
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
-
-```bash
-python3 plot_passes.py
-```
-
-<<<<<<< HEAD
-Shows the progressive refinement of the detector image at a fixed slab thickness (`assets/passes_grid.png`).
-=======
-Shows progressive refinement of the detector image at a fixed slab thickness.
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
-
-### Using the simulation directly
-
-The simulation can also be imported and used independently:
-
-```python
-import numpy as np
-from config import Config
-from particle import simulate
-
-<<<<<<< HEAD
-result = simulate(1.0, Config(), np.random.default_rng())
-=======
-settings = Config()
-
-result = simulate(
-    1.0,
-    settings,
-    np.random.default_rng()
-)
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
-
-result.grid            # detector image, shape (height, width)
-result.transmittance   # T, fraction of photon weight leaving through the bottom
-result.reflectance     # Rd, fraction of photon weight leaving through the top
-```
-
 ## Progressive refinement
 
 <<<<<<< HEAD
