@@ -1,91 +1,170 @@
 # Photon Monte Carlo
 
-Monte Carlo simulation of photon transport through a homogeneous scattering slab.
+A vectorized Monte Carlo simulation of photon transport through a homogeneous scattering slab.
 
-A narrow beam of photons enters a slab with thickness \(d\). As photons travel through the material, they undergo absorption and scattering. Photons leaving through the bottom surface are recorded on a two-dimensional detector, while photons leaving through the top surface contribute to the reflectance.
+A narrow beam of photons enters a slab at normal incidence. Photons can be absorbed, scattered, reflected, or transmitted. The simulation estimates the spatial distribution of transmitted light on a detector and calculates the total reflectance and transmittance.
 
-The simulation is based on the Monte Carlo approach to light transport described in [Scratchapixel – Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
+## Physical Model
 
-![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
+The slab occupies the region:
 
-## How it works
+$$
+0 \leq z \leq d
+$$
 
-Every photon starts at position `(0, 0, 0)`, moving straight down along the positive z-axis, with an initial weight `w = 1`.
+where $d$ is the slab thickness.
 
-The simulation repeats the following steps for each active photon:
+Each photon starts at the origin:
 
-1. **Free path sampling.** Sample the distance to the next interaction from an exponential distribution:
-   $$
-   s = -\frac{\ln(\xi)}{\sigma_t},
-   \qquad
-   \sigma_t = \sigma_a + \sigma_s
-   $$
+$$
+\mathbf{r}_0 = (0,0,0)
+$$
 
-   where \(\xi\) is a uniformly distributed random number between 0 and 1.
+with initial direction:
 
-3. **Boundary check.** Calculate the distance to the next slab boundary. If the sampled free path is longer than this distance, the photon leaves the slab before its next interaction. Photons leaving through the bottom contribute to the transmittance (**T**) and are recorded on the detector. Photons leaving through the top contribute to the reflectance (**Rd**).
+$$
+\mathbf{u}_0 = (0,0,1)
+$$
 
-4. **Absorption.** If the photon does not reach a boundary, it moves to the next interaction point. Its weight is reduced according to the scattering probability:
+and weight:
 
-   \[
-   w \leftarrow w \frac{\sigma_s}{\sigma_t}
-   \]
+$$
+w_0 = 1
+$$
 
-   This is an implicit capture approach: the absorbed fraction of the photon weight is removed, while the remaining fraction continues to propagate.
+The simulation follows each photon until it leaves the slab or its contribution becomes negligible.
 
-5. **Russian roulette.** If the photon weight falls below `roulette_threshold`, the photon survives with probability `roulette_survival`. Surviving photons have their weights divided by the survival probability; otherwise, they are terminated. This reduces computational effort while preserving an unbiased estimate.
+### 1. Sampling the free path
 
-6. **Scattering.** The photon direction is updated by sampling a new scattering angle from the Henyey–Greenstein phase function. The parameter `anisotropy` controls the preferred scattering direction: positive values favour forward scattering, negative values favour backward scattering, and zero corresponds to isotropic scattering.
+The distance a photon travels before its next interaction is sampled from an exponential distribution:
 
-All photons are simulated simultaneously using vectorized NumPy arrays. Each array element represents one photon packet. This avoids explicit Python loops over individual photons and improves computational efficiency.
-
-## Theoretical Background
-
-The simulation uses the Monte Carlo method to model the probabilistic nature of photon transport.
-
-The total interaction coefficient is defined as:
-
-\[
-\sigma_t = \sigma_a + \sigma_s
-\]
-
-where:
-
-- \(\sigma_a\) is the absorption coefficient.
-- \(\sigma_s\) is the scattering coefficient.
-- \(\sigma_t\) is the total interaction coefficient.
-
-The probability density of the distance \(s\) to the next interaction is:
-
-\[
+$$
 p(s) = \sigma_t e^{-\sigma_t s}
-\]
+$$
 
-The free path is sampled using inverse transform sampling:
+where the total interaction coefficient is:
 
-\[
+$$
+\sigma_t = \sigma_a + \sigma_s
+$$
+
+Here:
+
+- $\sigma_a$ — absorption coefficient
+- $\sigma_s$ — scattering coefficient
+- $\sigma_t$ — total interaction coefficient
+
+Using inverse transform sampling, the free path is calculated as:
+
+$$
 s = -\frac{\ln(\xi)}{\sigma_t}
-\]
+$$
 
-For scattering, the simulation uses the Henyey–Greenstein phase function:
+where $\xi$ is a uniformly distributed random number in the interval $(0,1)$.
 
-\[
+### 2. Boundary intersection
+
+After sampling the free path, the simulation checks whether the photon reaches a slab boundary before its next interaction.
+
+The photon exits through:
+
+- The bottom boundary ($z=d$): transmitted photon.
+- The top boundary ($z=0$): reflected photon.
+
+Photons that leave through the bottom boundary can contribute to the detector image.
+
+### 3. Absorption: implicit capture
+
+Instead of randomly deciding whether a photon is absorbed, the simulation reduces its weight after each interaction.
+
+The weight is updated according to:
+
+$$
+w_{\text{new}} =
+w_{\text{old}}
+\frac{\sigma_s}{\sigma_t}
+$$
+
+The remaining fraction represents the absorbed contribution.
+
+This technique is known as **implicit capture**. It reduces statistical noise compared with explicitly sampling absorption events.
+
+### 4. Russian roulette
+
+As photons undergo repeated interactions, their weights decrease.
+
+To avoid spending computational resources on photons with very small weights, Russian roulette is applied when:
+
+$$
+w < w_{\text{threshold}}
+$$
+
+A photon survives with probability $p$:
+
+$$
+P(\text{survival}) = p
+$$
+
+If it survives, its weight is increased:
+
+$$
+w_{\text{new}} = \frac{w_{\text{old}}}{p}
+$$
+
+Otherwise, the photon is terminated.
+
+This preserves the expected photon weight and therefore does not introduce bias into the estimator.
+
+### 5. Scattering direction
+
+After an interaction, the photon receives a new direction sampled from the Henyey–Greenstein phase function:
+
+$$
 p(\cos\theta) =
 \frac{1-g^2}
 {2(1+g^2-2g\cos\theta)^{3/2}}
-\]
+$$
 
-where \(g\) is the anisotropy parameter, represented by `anisotropy` in the implementation.
+where $g$ is the anisotropy parameter.
 
-The theoretical principles of Monte Carlo sampling and photon transport are based on:
+Its interpretation:
 
-[Scratchapixel – Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html)
+- $g=0$: isotropic scattering.
+- $g>0$: preferential forward scattering.
+- $g<0$: preferential backward scattering.
+
+The parameter must satisfy:
+
+$$
+-1 < g < 1
+$$
+
+## Implementation
+
+The simulation is implemented in Python using NumPy.
+
+Instead of processing photons individually, the implementation stores photon positions, directions, and weights in NumPy arrays. Operations such as free-path sampling, boundary checks, weight updates, and scattering are performed on entire photon arrays.
+
+This vectorized approach significantly reduces Python-level loop overhead.
+
+### Project structure
+
+```text
+.
+├── config.py
+├── particle.py
+├── plot_thickness.py
+├── plot_passes.py
+└── assets/
+    ├── thickness_grid.png
+    └── passes_grid.png
+```
 
 ## Requirements
 
 - Python 3.7+
 - NumPy
-- Matplotlib 3.5+
+- Matplotlib
 
 Install the dependencies:
 
@@ -95,132 +174,113 @@ pip install numpy matplotlib
 
 ## Usage
 
-Run the scripts from the project root. Generated images are saved in the `assets/` directory.
+Run the thickness comparison:
 
 ```bash
 python3 plot_thickness.py
 ```
 
-Generates detector images for different slab thicknesses.
+Run the progressive refinement comparison:
 
 ```bash
 python3 plot_passes.py
 ```
 
-Shows progressive refinement of the detector image at a fixed slab thickness.
+### Direct simulation
 
-### Using the simulation directly
-
-The simulation can also be imported and used independently:
+The simulation can also be called directly:
 
 ```python
 import numpy as np
+
 from config import Config
 from particle import simulate
 
 settings = Config()
 
 result = simulate(
-    1.0,
-    settings,
-    np.random.default_rng()
+    thickness=1.0,
+    settings=settings,
+    rng=np.random.default_rng()
 )
 
-result.grid            # detector image, shape (height, width)
-result.transmittance   # T, fraction of photon weight leaving through the bottom
-result.reflectance     # Rd, fraction of photon weight leaving through the top
+detector_image = result.grid
+transmittance = result.transmittance
+reflectance = result.reflectance
 ```
-
-## Progressive refinement
-
-`plot_passes.py` runs the simulation multiple times for the same slab thickness and averages the resulting detector images.
-
-Each pass uses a new set of randomly sampled photon paths. The accumulated image is averaged over the number of passes:
-
-\[
-I_{\mathrm{average}} =
-\frac{1}{M}\sum_{k=1}^{M} I_k
-\]
-
-where \(M\) is the number of independent simulation passes.
-
-The statistical noise decreases approximately as:
-
-\[
-\frac{1}{\sqrt{M}}
-\]
-
-For example, 16 independent passes produce approximately four times less statistical noise than one pass, assuming the same number of photons per pass.
-
-![Progressive refinement](assets/passes_grid.png)
 
 ## Configuration
 
-Simulation parameters are defined in the `Config` dataclass in `config.py`.
+Simulation parameters can be adjusted in `config.py`.
 
-| Parameter | Default | Description |
-|---|---:|---|
-| `photons` | 100000 | Number of photon packets per simulation |
-| `width` | 512 | Detector width in pixels |
-| `height` | 512 | Detector height in pixels |
-| `sigma_a` | 1.0 | Absorption coefficient |
-| `sigma_s` | 1.0 | Scattering coefficient |
-| `anisotropy` | 0.75 | Scattering anisotropy, -1 < g < 1 |
-| `detector_size` | 1.0 | Physical width and height of the square detector |
-| `roulette_threshold` | 0.001 | Weight below which Russian roulette starts |
-| `roulette_survival` | 0.1 | Survival probability in Russian roulette |
-
-The default values can be changed directly in `config.py` or overridden when creating a configuration object:
-
-```python
-settings = Config(
-    photons=1_000_000,
-    anisotropy=0.9,
-    sigma_a=0.5,
-    sigma_s=1.5
-)
-```
-
-Slab thicknesses, the number of simulation passes, and snapshot settings are defined in `plot_thickness.py` and `plot_passes.py`.
-
-## Why a logarithmic colour scale?
-
-A fraction of the photons pass through the slab without experiencing any interaction.
-
-The probability of no interaction over a distance \(d\) is:
-
-\[
-P_{\mathrm{no\ interaction}} = e^{-\sigma_t d}
-\]
-
-With the default parameters, \(\sigma_t = 2\), this probability is approximately 82% at \(d = 0.1\).
-
-These photons maintain their initial direction and reach approximately the same central detector pixel. As a result, the central pixel can be much brighter than the surrounding scattered distribution.
-
-A linear colour scale would make the weaker scattered contributions difficult to distinguish. Therefore, the detector images use a logarithmic colour scale. The upper limit is set to the 99.9th percentile of non-empty pixel values to make the scattered distribution visible while allowing the central pixel to saturate.
+| Parameter | Description |
+|---|---|
+| `photons` | Number of simulated photons |
+| `width` | Detector image width in pixels |
+| `height` | Detector image height in pixels |
+| `sigma_a` | Absorption coefficient |
+| `sigma_s` | Scattering coefficient |
+| `anisotropy` | Henyey–Greenstein anisotropy parameter $g$ |
+| `detector_size` | Physical size of the detector |
+| `roulette_threshold` | Weight threshold for Russian roulette |
+| `roulette_survival` | Survival probability in Russian roulette |
 
 ## Results
 
-The following results were obtained using the default parameters:
+The simulation produces three main outputs:
 
-- \(\sigma_a = 1.0\)
-- \(\sigma_s = 1.0\)
-- `anisotropy = 0.75`
-- 100,000 photon packets
+- **Detector image:** spatial distribution of transmitted photon weight.
+- **Transmittance:** fraction of initial photon weight transmitted through the slab.
+- **Reflectance:** fraction of initial photon weight reflected from the slab.
 
-| Slab thickness \(d\) | Transmittance \(T\) | Reflectance \(R_d\) |
+The transmittance and reflectance are normalized by the initial number of photons:
+
+$$
+T = \frac{N_{\text{transmitted}}}{N_{\text{initial}}}
+$$
+
+$$
+R = \frac{N_{\text{reflected}}}{N_{\text{initial}}}
+$$
+
+The detector image is normalized in the same way, so its pixel values represent transmitted photon weight per initial photon.
+
+### Progressive refinement
+
+The progressive refinement experiment averages independent simulation runs.
+
+For independent Monte Carlo samples, the statistical uncertainty approximately scales as:
+
+$$
+\sigma \propto \frac{1}{\sqrt{N}}
+$$
+
+Therefore, increasing the number of independent runs reduces statistical noise. For example, averaging 16 independent runs gives approximately four times lower standard error than a single run with the same number of photons.
+
+## Example results
+
+The following values illustrate the behavior of the simulation for different slab thicknesses using the default configuration.
+
+| Thickness $d$ | Transmittance $T$ | Reflectance $R$ |
 |---:|---:|---:|
 | 0.0 | 1.000 | 0.000 |
 | 0.1 | 0.897 | 0.005 |
 | 1.0 | 0.305 | 0.018 |
 | 2.0 | 0.084 | 0.019 |
 
-The values are Monte Carlo estimates and may vary between simulation runs due to random sampling.
+Monte Carlo results may vary slightly between runs because of random sampling.
 
-As the slab thickness increases, fewer photons reach the bottom surface. Photons also undergo more interactions on average, resulting in a broader spatial distribution of transmitted light.
+## Visualization
 
-The sum of reflectance and transmittance is generally less than one because part of the initial photon weight is absorbed inside the material.
+### Different slab thicknesses
 
-## Reference
+![Photon distribution for different slab thicknesses](assets/thickness_grid.png)
 
-- [Scratchapixel – Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html)
+### Progressive refinement
+
+![Progressive refinement of the detector image](assets/passes_grid.png)
+
+## References
+
+- [Scratchapixel — Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html)
+- [GitHub Docs — Writing mathematical expressions](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/writing-mathematical-expressions)
