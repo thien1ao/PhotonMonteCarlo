@@ -82,7 +82,7 @@ Generated plots are saved in the `assets/` directory with corresponding filename
  - `assets/thickness_grid.png`
  - `assets/passes_grid.png`
 
-## Configuration
+## ⚙️ Configuration
 
 | Parameter | Default | Description |
 |---|---:|---|
