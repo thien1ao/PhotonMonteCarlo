@@ -1,15 +1,15 @@
 # Monte Carlo Simulation of Photon Transport
 
-This project implements the algorithm from the Scratchapixel lesson [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html) (part of *Monte Carlo Methods in Practice*), rewritten in Python with numpy.
+This project implements the algorithm from the Scratchapixel lesson [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html) (part of *Monte Carlo Methods in Practice*), rewritten in Python with NumPy.
 
 ![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
 
 ## 📋 What was done
 
-1. **Implemented the lesson's algorithm**: free path sampling, photon weights, Russian roulette, Henyey–Greenstein scattering and the direction update (see [Algorithm](#algorithm)).
-2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays.
+1. **Implemented the lesson's algorithm**: free path sampling, photon weights, Russian roulette, Henyey–Greenstein scattering (see [Algorithm](#algorithm)).
+2. **Reimplemented in Python using NumPy arrays** Instead of a loop over photons, all photons are traced simultaneously using NumPy arrays. Photons that escape the slab are terminated by Russian roulette.
 3. **Reproduced the lesson's experiments:**
-   - detector image of the transmitted light,
+   - spatial distribution of transmitted photon weights,
    - increasing values of $d$ (the thickness of the slab) from $0$ to $2$ (`plot_thickness.py`),
    - progressive refinement: averaging the results of Monte Carlo approximations (`plot_passes.py`).
 
@@ -17,34 +17,33 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 
 Every photon packet starts at $(0, 0, 0)$ on the top surface and moves along $+z$, which points down into the slab (the top surface is at $z = 0$, the bottom at $z = d$). Its initial weight is $w = 1$. It then repeats the following steps until it leaves the slab or is killed.
 
-**1. Free path.** The distance to the next interaction follows the Beer–Lambert law, $p(s) = \sigma_t e^{-\sigma_t s}$ with $\sigma_t = \sigma_a + \sigma_s$. It is sampled by inverting the CDF:
+**1. Free path:** Sample distance to the next interaction using Beer–Lambert law , $p(s) = \sigma_t e^{-\sigma_t s}$ with $\sigma_t = \sigma_a + \sigma_s$:
 
 $$s = -\frac{\ln \xi}{\sigma_t}, \qquad \xi \sim U(0, 1)$$
 
-**2. Boundary test.** The distance to the slab surface along the direction $\mu$ is
+**2. Boundary test:** Determine whether the photon reaches the slab boundary before its next interaction:
 
 $$s_b = \frac{d - z}{\mu_z} \ \text{ if } \mu_z > 0, \qquad s_b = -\frac{z}{\mu_z} \ \text{ if } \mu_z < 0$$
 
-**3. Absorption.** Photon moves by $s$ and loses the absorbed
-fraction $\sigma_a / \sigma_t$ of its weight:
+**3. Absorption:** Account for absorption using implicit capture:
 
-$$w \rightarrow w - \frac{\sigma_a}{\sigma_t} = w$$
+$$w \leftarrow w\frac{\sigma_a}{\sigma_t}$$
 
+**4. Russian roulette.** Terminate low-weight photons probabilistically.
 
-`roulette_survival`
-**4. Russian roulette.**  When a photon's weight drops below `roulette_threshold` , continuing its trajectory becomes computationally expensive relative to its contribution to the result. Russian roulette is therefore applied: the photon survives with probability $p$ = `roulette_survival`, in which case its weight is increased to $w/p$. Otherwise, the photon is terminated.
-
-**5. Scattering.** The cosine of the deflection angle is sampled from the Henyey–Greenstein phase function with anisotropy $g$:
+**5. Scattering:** Sample a new direction using the Henyey–Greenstein phase function with anisotropy $g$:
 
 $$\cos\theta = \frac{1}{2g}\left[1 + g^2 - \left(\frac{1 - g^2}{1 - g + 2g\xi}\right)^2\right], \qquad \cos\theta = 2\xi - 1 \ \text{ for } g = 0$$
 
 The formulas for each coordinate of the new direction vector are as follows:
 
-$$\mu'_x = \mu_x\cos\theta + \frac{\sin\theta\,(\mu_x\mu_z\cos\phi - \mu_y\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
+$$\mu'_x = \mu_x\cos\theta + \frac{\sin\theta\(\mu_x\mu_z\cos\phi - \mu_y\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
 
-$$\mu'_y = \mu_y\cos\theta + \frac{\sin\theta\,(\mu_y\mu_z\cos\phi + \mu_x\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
+$$\mu'_y = \mu_y\cos\theta + \frac{\sin\theta\(\mu_y\mu_z\cos\phi + \mu_x\sin\phi)}{\sqrt{1 - \mu_z^2}}$$
 
-$$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\,\sin\theta\cos\phi$$
+$$\mu'_z = \mu_z\cos\theta - \sqrt{1 - \mu_z^2}\ \sin\theta\cos\phi$$
+
+**6. Repeat:** Continue until all photons have escaped or been terminated.
 
 :exclamation:
 The equations above are intended as a brief overview of the mathematical concepts. For a more detailed explanation and derivation, please refer to the [original lesson](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html).
@@ -138,23 +137,9 @@ On a linear colour scale only that single pixel would be visible. The detector i
 
 ## Results
 
-Obtained with the default parameters ($\sigma_a = 1$, $\sigma_s = 1$, $g = 0.75$, 100 000 photon packets):
-
 | Slab thickness $d$ | Transmittance $T$ | Reflectance $R_d$ | Absorbed $1 - T - R_d$ |
 |---:|---:|---:|---:|
 | 0.0 | 1.000 | 0.000 | 0.000 |
 | 0.1 | 0.897 | 0.005 | 0.098 |
 | 1.0 | 0.305 | 0.018 | 0.677 |
 | 2.0 | 0.084 | 0.019 | 0.897 |
-
-The values are Monte Carlo estimates and vary by about $\pm 0.001$ between runs.
-
-- As $d$ grows, fewer photons reach the bottom surface and more of the weight is absorbed.
-- The halo first widens (up to about $d \approx 0.7$), because photons scatter more often before they leave the slab, and then becomes dimmer and noisier, because fewer photons get through.
-- $R_d$ stays small: with $g = 0.75$ scattering is mostly forward, so few photons turn back towards the top surface.
-- $T + R_d < 1$ because part of the photon weight is absorbed inside the material.
-=======
-    anisotropy=0.9,
-    sigma_a=0.5,
-    sigma_s=1.5
-)
