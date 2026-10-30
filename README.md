@@ -113,15 +113,7 @@ The standard deviation of statistical noise decreases as $\frac{1}{M}$. For exam
 
 ![Progressive refinement](assets/passes_grid.png)
 
-## Why a logarithmic colour scale?
-
-The lesson notes that the detector values may need to be scaled to be visible. The reason is the photons that cross the slab without any interaction. By the Beer–Lambert law their fraction is
-
-$$P_{\text{no interaction}} = e^{-\sigma_t d}$$
-
-With the default parameters ($\sigma_t = 2$) this is about 82 % at $d = 0.1$. These photons keep their initial direction and all land in the central detector pixel, which is therefore thousands of times brighter than the scattered halo around it.
-
-On a linear colour scale only that single pixel would be visible. The detector images therefore use a logarithmic colour scale, with the upper limit at the 99.9th percentile of the non-empty pixel values: the scattered distribution becomes visible and the central pixel simply saturates.
+:exclamation: The images above use a logarithmic colour scale to make the scattered photon distribution visible. For $\sigma_t = 2$ and $d = 0.1$, the Beer–Lambert law gives an unscattered fraction of $e^{-\sigma_t d} \approx 82\%$. These photons keep their direction and strike the central detector pixel, which therefore dominates the image. On a linear scale, the scattered photons would be nearly invisible.
 
 ## Results
 
