@@ -2,7 +2,6 @@
 
 Monte Carlo simulation of photon transport through a homogeneous scattering slab.
 
-<<<<<<< HEAD
 A narrow beam of photons enters a slab of thickness $d$. Inside the material the photons are absorbed and scattered. Photons leaving through the bottom surface are recorded on a two-dimensional detector (transmittance $T$), photons leaving through the top surface contribute to the diffuse reflectance $R_d$.
 
 The project implements the algorithm from the Scratchapixel lesson [Monte Carlo Simulation](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-simulation.html) (part of *Monte Carlo Methods in Practice*), rewritten in Python with numpy.
@@ -10,8 +9,6 @@ The project implements the algorithm from the Scratchapixel lesson [Monte Carlo 
 ![Transmitted photons for different slab thicknesses](assets/thickness_grid.png)
 
 ## What was done
-
-The lesson presents the simulation as a C++ program that traces one photon at a time. This project:
 
 1. **Implemented the lesson's algorithm**: free path sampling, photon weights, Russian roulette, Henyey–Greenstein scattering and the direction update (see [Algorithm](#algorithm)).
 2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays. 100 000 photons take a fraction of a second.
@@ -237,4 +234,3 @@ The values are Monte Carlo estimates and vary by about $\pm 0.001$ between runs.
     sigma_a=0.5,
     sigma_s=1.5
 )
->>>>>>> 76f3b2c502b2b1f61bd7b9cc4ac72d80581f7446
