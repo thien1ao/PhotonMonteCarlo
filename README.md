@@ -25,8 +25,6 @@ $$s = -\frac{\ln \xi}{\sigma_t}, \qquad \xi \sim U(0, 1)$$
 
 $$s_b = \frac{d - z}{\mu_z} \ \text{ if } \mu_z > 0, \qquad s_b = -\frac{z}{\mu_z} \ \text{ if } \mu_z < 0$$
 
-If $s > s_b$, the photon is moved to the surface and leaves the slab: through the bottom it adds its weight to $T$ and to the detector cell it hits, through the top it adds its weight to $R_d$.
-
 **3. Absorption.** Otherwise the photon moves by $s$ and loses the absorbed part of its weight:
 
 $$w \leftarrow w \, \frac{\sigma_s}{\sigma_t}$$
