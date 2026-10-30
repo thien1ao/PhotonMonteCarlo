@@ -78,9 +78,9 @@ conda activate photon-mc
 python3 plot_thickness.py
 python3 plot_passes.py
 ```
-Generated plots are saved in the assets/ directory with corresponding filenames:
- - assets/thickness_grid.png
- - assets/passes_grid.png
+Generated plots are saved in the `assets/` directory with corresponding filenames:
+ - `assets/thickness_grid.png`
+ - `assets/passes_grid.png`
 
 ## Configuration
 
