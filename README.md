@@ -7,7 +7,7 @@ This project implements the algorithm from the Scratchapixel lesson [Monte Carlo
 ## What was done
 
 1. **Implemented the lesson's algorithm**: free path sampling, photon weights, Russian roulette, Henyey–Greenstein scattering and the direction update (see [Algorithm](#algorithm)).
-2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays. 100 000 photons take a fraction of a second.
+2. **Rewrote it in Python with numpy.** Instead of a loop over photons, all photons are traced at the same time as arrays (one array element = one photon). Photons that leave the slab or die in Russian roulette are removed from the arrays.
 3. **Fixed issues in the lesson's code** (see [Differences from the lesson](#differences-from-the-lesson)).
 4. **Reproduced the lesson's experiments:**
    - detector image of the transmitted light (the diffusion halo around the beam),
